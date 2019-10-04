@@ -83,8 +83,6 @@ class Ui_MainWindow(QMainWindow):
         print(type(aa))
         print(aa)
 
-        # return aa
-
 
     def viewclicked(self,index):
         col = self.tableWidget.currentColumn()
