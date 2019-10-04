@@ -1,0 +1,163 @@
+from PyQt5 import QtCore, QtGui, QtWidgets
+from PyQt5.QtGui import QIcon
+from PyQt5.QtWidgets import *
+from PyQt5.QtCore import *
+import pandas as pd
+import numpy as np
+from openpyxl import *
+
+
+
+class Ui_MainWindow(QMainWindow):
+
+    def __init__(self):
+        super(QtWidgets.QMainWindow,self).__init__()
+        self.setupUi(self)
+        self.retranslateUi(self)
+
+    def setupUi(self, MainWindow):
+        MainWindow.setObjectName("MainWindow")
+        MainWindow.resize(666, 488)
+        self.centralWidget = QtWidgets.QWidget(MainWindow)
+        self.centralWidget.setObjectName("centralWidget")
+        self.retranslateUi(MainWindow)
+
+        self.tableWidget = QtWidgets.QTableWidget(self.centralWidget)
+        self.tableWidget.setGeometry(QtCore.QRect(0, 60, 813, 371))
+        self.tableWidget.setObjectName("tableWidget")
+        self.tableWidget.setColumnCount(0)
+        self.tableWidget.setRowCount(0)
+        self.tableWidget.setStyleSheet("selection-background-color:pink")
+        self.tableWidget.setEditTriggers(QAbstractItemView.NoEditTriggers)
+        self.tableWidget.raise_()
+
+        self.pushButton = QtWidgets.QPushButton(self.centralWidget)
+        self.pushButton.setGeometry(QtCore.QRect(90, 20, 75, 23))
+        self.pushButton.setObjectName("pushButton")
+        self.pushButton.setText("打开")
+        MainWindow.setCentralWidget(self.centralWidget)
+        QtCore.QMetaObject.connectSlotsByName(MainWindow)
+
+        self.pushButton.clicked.connect(self.openfile)
+        self.pushButton.clicked.connect(self.creat_table_show)
+
+        #想要获得点击所在列 zhh
+        self.tableWidget.clicked.connect(self.viewclicked)
+
+        self.tableWidget.verticalHeader().sectionClicked.connect(self.VerSectionClicked)  # 表头单击信号
+        self.tableWidget.horizontalHeader().sectionClicked.connect(self.HorSectionClicked)  # 表头单击信号
+
+    def VerSectionClicked(self, index):
+        print(index)
+        ExcelSplit()
+
+
+    def HorSectionClicked(self, index):
+        print(index)
+        aa = self.tableWidget.model().headerData(index, Qt.Horizontal)
+        print(aa)
+
+
+    def viewclicked(self,index):
+        col = self.tableWidget.currentColumn()
+        row = self.tableWidget.currentRow()
+        print('您点击了第' + str(row+1) +'行' + '第' + str(col+1) + '列。' + '列名：')
+
+
+    def retranslateUi(self, MainWindow):
+        _translate = QtCore.QCoreApplication.translate
+        MainWindow.setWindowTitle(_translate("MainWindow", "Excel展示"))
+
+
+    def openfile(self):
+
+        ###获取路径===================================================================
+
+        openfile_name = QFileDialog.getOpenFileName(self,'选择文件','','Excel files(*.xlsx , *.xls)')
+
+        #print(openfile_name)
+        global path_openfile_name
+
+
+
+
+        ###获取路径====================================================================
+
+        path_openfile_name = openfile_name[0]
+
+
+    def creat_table_show(self):
+        ###===========读取表格，转换表格，===========================================
+        if len(path_openfile_name) > 0:
+            input_table = pd.read_excel(path_openfile_name)
+        #print(input_table)
+            input_table_rows = input_table.shape[0]
+            input_table_colunms = input_table.shape[1]
+            #print(input_table_rows)
+            #print(input_table_colunms)
+            input_table_header = input_table.columns.values.tolist()
+            #print(input_table_header)
+
+        ###===========读取表格，转换表格，============================================
+        ###======================给tablewidget设置行列表头============================
+
+            self.tableWidget.setColumnCount(input_table_colunms)
+            self.tableWidget.setRowCount(input_table_rows)
+            self.tableWidget.setHorizontalHeaderLabels(input_table_header)
+
+        ###======================给tablewidget设置行列表头============================
+
+        ###================遍历表格每个元素，同时添加到tablewidget中========================
+            for i in range(input_table_rows):
+                input_table_rows_values = input_table.iloc[[i]]
+                #print(input_table_rows_values)
+                input_table_rows_values_array = np.array(input_table_rows_values)
+                input_table_rows_values_list = input_table_rows_values_array.tolist()[0]
+            #print(input_table_rows_values_list)
+                for j in range(input_table_colunms):
+                    input_table_items_list = input_table_rows_values_list[j]
+                #print(input_table_items_list)
+                # print(type(input_table_items_list))
+
+        ###==============将遍历的元素添加到tablewidget中并显示=======================
+
+                    input_table_items = str(input_table_items_list)
+                    newItem = QTableWidgetItem(input_table_items)
+                    newItem.setTextAlignment(Qt.AlignHCenter|Qt.AlignVCenter)
+                    self.tableWidget.setItem(i, j, newItem)
+
+        ###================遍历表格每个元素，同时添加到tablewidget中========================
+        else:
+            self.centralWidget.show()
+
+
+    def ExcelSplit():
+        # import pandas as pd
+        # from openpyxl import *
+
+        data = pd.read_excel(r'e:\tina.xlsx')
+        # data['日期']=pd.to_datetime(data['时间']).dt.date
+        data_excel=[]
+        sheetname=[]
+        for x in data.groupby('销售员名称'):
+            data_excel.append(x[1])
+            sheetname.append(x[0])
+        for i in range(len(sheetname)): #区别在于循环创建多个路径，路径中加入变量工作表名称
+            filename = "e:\\" + str(sheetname[i]) + ".xlsx"
+            print(filename)
+            # data_excel[i].iloc[:,0:4].to_excel(r"e:\\" + str(sheetname[i]) + ".xlsx")
+            data_excel[i].iloc[:,0:3].to_excel(filename)
+            wb = load_workbook(filename)
+            ws = wb.active
+            ws.delete_cols(1) #删除第 13 列数据
+            wb.save(filename)
+            QMessageBox.warning(self, '', '切割完毕！', QMessageBox.Yes)
+
+if __name__ == "__main__":
+    import sys
+    app = QtWidgets.QApplication(sys.argv)
+    MainWindow = QtWidgets.QMainWindow()
+    ui = Ui_MainWindow()
+    ui.setupUi(MainWindow)
+    MainWindow.show()
+    sys.exit(app.exec_())
