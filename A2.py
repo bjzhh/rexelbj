@@ -69,10 +69,9 @@ class Ui_MainWindow(QMainWindow):
         self.pushButton_2.setText(_translate("MainWindow", "输出路径"))
 
 
-
     def VerSectionClicked(self, index):
         print(index)
-        ExcelSplit()
+        # ExcelSplit()
 
 
     def HorSectionClicked(self, index):
