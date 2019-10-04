@@ -79,8 +79,8 @@ class Ui_MainWindow(QMainWindow):
         global aa
 
         aa = self.tableWidget.model().headerData(index, Qt.Horizontal)
-        print(type(aa))
-        print(aa)
+        # print(type(aa))
+        # print(aa)
 
 
     def viewclicked(self,index):
