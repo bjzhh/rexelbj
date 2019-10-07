@@ -16,6 +16,7 @@ Last edited: August 2017
 import sys
 from PyQt5.QtWidgets import QMainWindow, QTextEdit, QAction, QApplication
 from PyQt5.QtGui import QIcon
+import A2
 
 
 class Example(QMainWindow):

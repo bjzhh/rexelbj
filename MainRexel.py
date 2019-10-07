@@ -3,11 +3,21 @@ from PyQt5.QtWidgets import *
 from PyQt5.QtGui import QIcon
 from PyQt5.QtCore import *
 from PyQt5.QtGui import *
+import webbrowser
+
 
 class MainMenu(QMainWindow):
-    def __init__(self,parent=None):
-        super(MainMenu,self).__init__(parent)
+    # def __init__(self,parent=None):
+    #     super(MainMenu,self).__init__(parent)
+    def __init__(self):
+        super().__init__()
+
+        self.initUI()
+
+    def initUI(self):
         self.resize(800, 600)
+        self.setWindowIcon(QIcon("./res/box.ico"))  # 设置窗口图标
+        self.setWindowTitle("REXEL App Box")  # 设置窗口名
 
         layout = QHBoxLayout()
         bar = self.menuBar()
@@ -17,9 +27,9 @@ class MainMenu(QMainWindow):
         m1.addAction('Save')
         m1.addAction('Save...')
         m1.addAction('print')
-        m1.addAction('Quit')
+        myquit= m1.addAction('Quit')
 
-        m1.triggered[QAction].connect(self.pk)
+        bar.triggered[QAction].connect(self.pk)
 
         m2 = bar.addMenu('ShortCut')
         m2.addAction('IFS')
@@ -28,20 +38,38 @@ class MainMenu(QMainWindow):
         m2.addAction('ESS')
         m2.addAction('OMS')
         m2.addAction('IMC')
+        m2.addAction('Office365')
+        m2.addAction('Rexel website')
 
-
-        m3 = bar.addMenu('ShortCut')
+        m3 = bar.addMenu('Office')
         m3.addAction('Excel Split')
 
-
-        m4 = bar.addMenu('ShortCut')
+        m4 = bar.addMenu('Help')
         m4.addAction('Update...')
         m4.addAction('About')
+
+        myquit = QAction(QIcon('./res/exit.ico'), 'Quit', self)
+        myquit.setShortcut('Ctrl+Q')
+        myquit.setStatusTip('Quit application')
+        myquit.triggered.connect(self.close)
+
+        self.statusBar()
+        # menubar = self.menuBar()
+        # fileMenu = bar.addMenu('&File')
+        # fileMenu.addAction(exitAct)
+
+        toolbar = self.addToolBar('Exit')
+        toolbar.addAction(myquit)
 
     def pk(self,q):
         print(q.text(),' is ok')
         if q.text() == 'Quit':
             self.close()
+        elif q.text() == 'Office365':
+            webbrowser.open_new('http://outlook.office365.com')
+        elif q.text() == 'Rexel website':
+            webbrowser.open_new('http://www.rexel.com.cn')
+
 
 if __name__ == '__main__':
     app = QApplication(sys.argv)

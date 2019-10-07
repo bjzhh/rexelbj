@@ -9,6 +9,9 @@
 
 from PyQt5 import QtCore, QtGui, QtWidgets
 
+# import webbrowser
+from PyQt5.QtWidgets import QAction
+
 
 class Ui_MainWindow(object):
     def setupUi(self, MainWindow):
@@ -85,8 +88,13 @@ class Ui_MainWindow(object):
         self.menubar.addAction(self.menuOfficeTools.menuAction())
         self.menubar.addAction(self.menuHelp.menuAction())
 
+
         self.retranslateUi(MainWindow)
         QtCore.QMetaObject.connectSlotsByName(MainWindow)
+        # self.actionIFS.triggered(QAction).connect(self.pk)
+
+# def pk(self,q):
+#     print(q.text() + 'okokok')
 
     def retranslateUi(self, MainWindow):
         _translate = QtCore.QCoreApplication.translate
@@ -110,3 +118,4 @@ class Ui_MainWindow(object):
         self.actionExcel_Split.setText(_translate("MainWindow", "Excel Split"))
         self.actionAbout.setText(_translate("MainWindow", "About"))
         self.actionUpdate.setText(_translate("MainWindow", "Update..."))
+
