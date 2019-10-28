@@ -1,0 +1,41 @@
+使用pyinstaller打包pyqt5出错问题解决
+2017-01-14 20:00:01 普朗克常量 阅读数 11160更多
+分类专栏： 异常
+版权声明：本文为博主原创文章，遵循 CC 4.0 BY-SA 版权协议，转载请附上原文出处链接和本声明。
+本文链接：https://blog.csdn.net/u013401853/article/details/54428434
+我使用的打包命令如下
+pyinstaller -F form.py
+打包的时候有很多lib not found的警告，打包完运行会出错，提示如下
+
+C:\Users\leon\Desktop\pyqt\dist>form.exe
+Traceback (most recent call last):
+  File "site-packages\PyInstaller\loader\rthooks\pyi_rth_qt5plugins.py", line 46, in <module>
+  File "c:\users\leon\appdata\local\programs\python\python35\lib\site-packages\PyInstaller\loader\pyimod03_importers.py", line 573, in load_module
+    module = loader.load_module(fullname)
+ImportError: DLL load failed: 找不到指定的模块。
+Failed to execute script pyi_rth_qt5plugins
+
+找了下是路径不对，指定搜索路径就好了，如下
+pyinstaller --path C:\Users\leon\AppData\Local\Programs\Python\Python35\Lib\site-packages\PyQt5\Qt\bin -F form.py
+
+双击form.exe运行时GUI界面正常运行，但还有控制台显示在哪儿，可以加--noconsole参数去掉控制台
+pyinstaller --path C:\Users\leon\AppData\Local\Programs\Python\Python35\Lib\site-packages\PyQt5\Qt\bin -F form.py --noconsole
+
+
+
+
+编译EXE时注意用如下命令
+pyinstaller --clean --noconsole --path D:\Python36\Lib\site-packages\PyQt5\Qt\bin -D a2.py
+
+
+----------------------------
+
+有的 Excel 文件数据量很大，“冻结” 标题字段（一般是顶部几行或左边几列）有助于阅读与理解这些数据。
+
+Worksheet 对象拥有 freeze_panes 属性，我们可以为其设置为一个单元格的 Cell 对象或代表其坐标的字符串。注意： ，这个单元格之上的所有行和左边的所有列都会被冻结，但不会影响其单元格所在的行和列。所以将其设置为 A1，是没有效果的。
+
+wb = openpyxl.load_workbook('全国高校名单.xlsx')
+sheet = wb.active
+sheet.freeze_panes = 'A4'
+wb.save('freeze.xlsx')
+————————————————

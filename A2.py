@@ -67,7 +67,7 @@ class Ui_MainWindow(QMainWindow):
         _translate = QtCore.QCoreApplication.translate
         MainWindow.setWindowTitle(_translate("MainWindow", "Excel按列拆分"))
         self.pushButton.setText(_translate("MainWindow", "打开"))
-        self.pushButton_2.setText(_translate("MainWindow", "输出路径"))
+        self.pushButton_2.setText(_translate("MainWindow", "按列切割"))
 
 
     def VerSectionClicked(self, index):
@@ -87,8 +87,8 @@ class Ui_MainWindow(QMainWindow):
     def viewclicked(self,index):
         col = self.tableWidget.currentColumn()
         row = self.tableWidget.currentRow()
-        print('您点击了第' + str(row+1) +'行' + '第' + str(col+1) + '列。' + '列名：')
-        print(self.tableWidget.columnCount())
+        # print('您点击了第' + str(row+1) +'行' + '第' + str(col+1) + '列。' + '列名：')
+        # print(self.tableWidget.columnCount())
 
 
     def openfile(self):
@@ -106,7 +106,7 @@ class Ui_MainWindow(QMainWindow):
         ###获取路径====================================================================
 
         path_openfile_name = openfile_name[0]
-        self.label_2.setText(path_openfile_name)
+        self.label.setText(path_openfile_name)
 
     def creat_table_show(self):
         ###===========读取表格，转换表格，===========================================
@@ -149,6 +149,10 @@ class Ui_MainWindow(QMainWindow):
                     self.tableWidget.setItem(i, j, newItem)
 
         ###================遍历表格每个元素，同时添加到tablewidget中========================
+
+            #提示用户不要忘了点列名
+            QMessageBox.warning(self, '', '请点击表中列名进行按列拆分。', QMessageBox.Yes)
+
         else:
             self.centralWidget.show()
 
@@ -167,16 +171,22 @@ class Ui_MainWindow(QMainWindow):
         for x in data.groupby(str(aa)):
             data_excel.append(x[1])
             sheetname.append(x[0])
+
+        dir2 = QFileDialog.getExistingDirectory(self,'选择目标文件夹','')
         for i in range(len(sheetname)): #区别在于循环创建多个路径，路径中加入变量工作表名称
-            filename = "e:\\" + str(sheetname[i]) + ".xlsx"
-            print(filename)
+            # print(dir2)
+            filename = str(dir2) + "\\" + str(sheetname[i]) + ".xlsx"
+            # filename = "d:\\excelsplit\\" + str(sheetname[i]) + ".xlsx"
+
+            # print(filename)
             # data_excel[i].iloc[:,0:4].to_excel(r"e:\\" + str(sheetname[i]) + ".xlsx")
             data_excel[i].iloc[:,0:self.tableWidget.columnCount()].to_excel(filename)
             wb = load_workbook(filename)
             ws = wb.active
             ws.delete_cols(1) #删除第 13 列数据
+            ws.freeze_panes = 'A2'  #冻结第一行
             wb.save(filename)
-            QMessageBox.warning(self, '', '切割完毕！', QMessageBox.Yes)
+        QMessageBox.warning(self, '', '切割完毕！', QMessageBox.Yes)
 
 if __name__ == "__main__":
     import sys

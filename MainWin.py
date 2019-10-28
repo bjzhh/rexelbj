@@ -1,15 +1,8 @@
-# -*- coding: utf-8 -*-
+import sys
+from PyQt5 import QtCore, QtGui, QtWidgets,QMainWindow
 
-# Form implementation generated from reading ui file 'MainWin.ui'
-#
-# Created by: PyQt5 UI code generator 5.13.0
-#
-# WARNING! All changes made in this file will be lost!
+import webbrowser
 
-
-from PyQt5 import QtCore, QtGui, QtWidgets
-
-# import webbrowser
 from PyQt5.QtWidgets import QAction
 
 
@@ -118,4 +111,5 @@ class Ui_MainWindow(object):
         self.actionExcel_Split.setText(_translate("MainWindow", "Excel Split"))
         self.actionAbout.setText(_translate("MainWindow", "About"))
         self.actionUpdate.setText(_translate("MainWindow", "Update..."))
+
 

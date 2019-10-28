@@ -1,5 +1,5 @@
 from PyQt5 import QtCore, QtGui, QtWidgets
-from PyQt5.QtGui import QIcon
+# from PyQt5.QtGui import QIcon
 from PyQt5.QtWidgets import *
 from PyQt5.QtCore import *
 import pandas as pd
@@ -106,7 +106,8 @@ class Ui_MainWindow(QMainWindow):
         ###获取路径====================================================================
 
         path_openfile_name = openfile_name[0]
-        self.label_2.setText(path_openfile_name)
+        print(path_openfile_name)
+        self.label.setText(path_openfile_name)
 
     def creat_table_show(self):
         ###===========读取表格，转换表格，===========================================
@@ -168,7 +169,7 @@ class Ui_MainWindow(QMainWindow):
             data_excel.append(x[1])
             sheetname.append(x[0])
         for i in range(len(sheetname)): #区别在于循环创建多个路径，路径中加入变量工作表名称
-            filename = "e:\\" + str(sheetname[i]) + ".xlsx"
+            filename = "d:\\" + str(sheetname[i]) + ".xlsx"
             print(filename)
             # data_excel[i].iloc[:,0:4].to_excel(r"e:\\" + str(sheetname[i]) + ".xlsx")
             data_excel[i].iloc[:,0:self.tableWidget.columnCount()].to_excel(filename)
@@ -176,7 +177,7 @@ class Ui_MainWindow(QMainWindow):
             ws = wb.active
             ws.delete_cols(1) #删除第 13 列数据
             wb.save(filename)
-            QMessageBox.warning(self, '', '切割完毕！', QMessageBox.Yes)
+        QMessageBox.warning(self, '', '切割完毕！', QMessageBox.Yes)
 
 if __name__ == "__main__":
     import sys
